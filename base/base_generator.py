@@ -38,7 +38,7 @@ def generate_secondary(word, limit = 500):
     S = requests.Session()
     URL = "https://en.wikipedia.org/w/api.php"
     knowledge_base[word].append([])
-    for i in knowledge_base[word][0]:
+    for i in knowledge_base[word][-2]:
         PARAMS = {
             "action": "query",
             "format": "json",
@@ -55,8 +55,8 @@ def generate_secondary(word, limit = 500):
             try:
                 for l in v["links"]:
                     if(':' not in l["title"]) :
-                        if(l["title"] not in knowledge_base[word][0]):
-                            knowledge_base[word][1].append(l["title"])
+                        if(l["title"] not in knowledge_base[word][-2]):
+                            knowledge_base[word][-1].append(l["title"])
             except:
                 continue
 
