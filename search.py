@@ -1,11 +1,14 @@
 import re
+import json
+import nltk
+import string
 from googlesearch import search   
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 link_results = []
 text_content = []
-
+words = []
 
 def is_ul(j):
     if re.match(r"\S*youtube.com\S*",j):
@@ -46,6 +49,8 @@ def get_text_content():
         print(article)
         text_content.append(article)
 
-get_links("Apple Inc")
+get_links("India")
 get_text_content()
-print(text_content)
+
+with open("fetched.json", "w") as f:
+    json.dump(text_content, f)
