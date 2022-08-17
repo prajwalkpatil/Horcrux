@@ -152,51 +152,43 @@ def calculate_horcrux():
     print(match_ratio)
 
 
+def main():
+    write_log("===================== START SESSION ======================", this_file)
 
+    try:
+        fetch_base()
+    except:
+        write_log("Error in fetching the base", this_file)
+    
+    query = input("Enter the key-word: ")
+    while True:
+        try:
+            get_links(query)
+            break
+        except:
+            write_log(f"Error in getting links for \'{query}\', Trying again.", this_file)
+            continue
 
-write_log("===================== START SESSION ======================", this_file)
+    try:
+        get_text_content()
+    except:
+        write_log("Error in getting the text content", this_file)
+        exit()
 
-try:
-    fetch_base()
-except:
-    write_log("Error in fetching the base", this_file)
+    try:
+        process_text_content()
+    except:
+        write_log("Error in processing the text content", this_file)
+        exit()
 
-try:
-    query = "KMP algorithm"
-    get_links(query)
-except:
-    write_log(f"Error in getting links for {query}", this_file)
-    exit()
+    try:
+        find_horcrux()
+    except:
+        write_log("Error in finding Horcrux", this_file)
+        exit()
 
-try:
-    get_text_content()
-except:
-    write_log("Error in getting the text content", this_file)
-    exit()
+    calculate_horcrux()
 
-try:
-    process_text_content()
-except:
-    write_log("Error in processing the text content", this_file)
-    exit()
+    write_log("====================== END SESSION ======================\n\n\n", this_file)
 
-
-with open("fetched.json", "w") as f:
-    json.dump(text_content, f)
-write_log(f"text_content written to - \"fetched.json\"", this_file)
-
-with open("selected.json", "w") as f:
-    json.dump(selected_words, f)
-write_log(f"selected_words written to - \"selected.json\"", this_file)
-
-try:
-    find_horcrux()
-except:
-    write_log("Error in finding Horcrux", this_file)
-    exit()
-
-calculate_horcrux()
-
-write_log("====================== END SESSION ======================\n\n\n", this_file)
-
-
+main()
