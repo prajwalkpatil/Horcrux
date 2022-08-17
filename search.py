@@ -2,6 +2,7 @@ import re
 import json
 import nltk
 import string
+from datetime import datetime
 from googlesearch import search   
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -33,7 +34,7 @@ def get_links(keyword):
     for j in search(keyword, tld="com", num=20, stop=20, pause=2): 
         if not is_ul(j):
             link_results.append(j) 
-    print(link_results)
+    # print(link_results)
 
 def get_text_content():
     global link_results
@@ -79,11 +80,38 @@ def fetch_base():
     with open("base/json/base_joined.json","r") as json_file:
         knowledge_base = json.load(json_file)
 
-fetch_base()
-print(knowledge_base)
-get_links("India")
-get_text_content()
-process_text_content()
+
+def write_log(log_msg, from_file_name, log_file_name = "log"):
+    now = datetime.now()
+    date_time = now.strftime("%d %B %Y, %H:%M:%S")
+    with open(f"logs/{log_file_name}.txt","a") as file_ptr:
+        msg = f"{from_file_name} : {date_time} - {log_msg} \n";
+        file_ptr.write(msg)
+    print(f"Written logs/{log_file_name}.txt")
+
+
+try:
+    fetch_base()
+except:
+    print("Error in fetching the base.")
+
+try:
+    query = "Facebook"
+    get_links(query)
+except:
+    print("Error in getting links.")
+    
+
+try:
+    get_text_content()
+except:
+    print("Error in getting the text content.")
+
+try:
+    process_text_content()
+except:
+    print("Error in processing the text content.")
+
 
 with open("fetched.json", "w") as f:
     json.dump(text_content, f)
