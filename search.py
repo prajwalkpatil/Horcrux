@@ -16,6 +16,7 @@ text_content = []
 selected_words = []
 knowledge_base = {}
 match_number = {}
+match_ratio = {}
 
 def is_ul(j):
     if re.match(r"\S*youtube.com\S*",j):
@@ -30,11 +31,13 @@ def is_ul(j):
         return True
     if re.match(r"\S*amazon.\S*",j):
         return True
+    if re.match(r"\S*gstatic.\S*",j):
+        return True
     return False
 
 def get_links(keyword):
     global link_results
-    for j in search(keyword, tld="com", num=10, stop=10, pause=2): 
+    for j in search(keyword, tld="com", num = 25, stop = 25, pause=2): 
         if not is_ul(j):
             link_results.append(j)
     write_log(f"Links fetched for \"{keyword}\" successfully", this_file)
@@ -51,6 +54,7 @@ def get_text_content():
             write_log(f"Text fetched for the URL - {url}", this_file)
         except:
             write_log(f"Couldn't open the URL - {url}", this_file)
+            continue
         soup = BeautifulSoup(page, 'html.parser')
         content = soup.findAll('p')
         article = ''
@@ -96,7 +100,7 @@ def write_log(log_msg, from_file_name, log_file_name = "log"):
     with open(f"logs/{log_file_name}.txt","a") as file_ptr:
         msg = f"{from_file_name} : {date_time} - {log_msg} \n";
         file_ptr.write(msg)
-    print(f"{log_msg} - logs/{log_file_name}.txt")
+    print(log_msg)
 
 
 # ----------------------- Functions for matching Horcrux ---------------------- #
@@ -131,6 +135,23 @@ def find_horcrux(number_of_common = 8):
             match_horcrux(j[0])
     write_log(match_number,this_file)
 
+def calculate_horcrux():
+    global match_number
+    global match_ratio
+    total_score = 0
+    for i in match_number:
+        match_ratio[i] = {}
+        match_ratio[i]["score"] = 0;
+        match_ratio[i]["percentage"] = 0;
+        for j in range(0, len(match_number[i])):
+            match_ratio[i]["score"] += match_number[i][j] * (1 / pow(20,j))
+    for i in match_ratio:
+        total_score += match_ratio[i]["score"]
+    for i in match_ratio:
+        match_ratio[i]["percentage"] = (match_ratio[i]["score"] / total_score) * 100;
+    print(match_ratio)
+
+
 
 
 write_log("===================== START SESSION ======================", this_file)
@@ -141,20 +162,23 @@ except:
     write_log("Error in fetching the base", this_file)
 
 try:
-    query = ""
+    query = "KMP algorithm"
     get_links(query)
 except:
     write_log(f"Error in getting links for {query}", this_file)
+    exit()
 
 try:
     get_text_content()
 except:
     write_log("Error in getting the text content", this_file)
+    exit()
 
 try:
     process_text_content()
 except:
     write_log("Error in processing the text content", this_file)
+    exit()
 
 
 with open("fetched.json", "w") as f:
@@ -169,7 +193,9 @@ try:
     find_horcrux()
 except:
     write_log("Error in finding Horcrux", this_file)
+    exit()
 
+calculate_horcrux()
 
 write_log("====================== END SESSION ======================\n\n\n", this_file)
 
