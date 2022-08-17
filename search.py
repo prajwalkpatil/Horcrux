@@ -14,6 +14,7 @@ link_results = []
 text_content = []
 selected_words = []
 knowledge_base = {}
+match_number = {}
 
 def is_ul(j):
     if re.match(r"\S*youtube.com\S*",j):
@@ -32,7 +33,7 @@ def is_ul(j):
 
 def get_links(keyword):
     global link_results
-    for j in search(keyword, tld="com", num=20, stop=20, pause=2): 
+    for j in search(keyword, tld="com", num=10, stop=10, pause=2): 
         if not is_ul(j):
             link_results.append(j)
     write_log(f"Links fetched for \"{keyword}\" successfully", this_file)
@@ -106,7 +107,7 @@ except:
     write_log("Error in fetching the base", this_file)
 
 try:
-    query = "Hindu"
+    query = "Search Term"
     get_links(query)
 except:
     write_log(f"Error in getting links for {query}", this_file)
@@ -131,3 +132,31 @@ with open("selected.json", "w") as f:
 write_log(f"selected_words written to - \"selected.json\"", this_file)
 
 write_log("====================== END SESSION ======================\n\n\n", this_file)
+
+
+# ----------------------- Functions for matching Horcrux ---------------------- #
+
+def does_match(word, given_string):
+    reg = r".?" + word + r".?";
+    return len(re.findall(reg, given_string, re.IGNORECASE))
+
+def init_match_number():
+    global match_number
+    match_number = {}
+    for i in knowledge_base:
+        match_number[i] = []
+        for j in knowledge_base[i]:
+            match_number[i].append(0)
+
+def match_horcrux(word):
+    global match_number
+    if match_number == {}:
+        init_match_number()
+    for i in knowledge_base:
+        for index in range(0, len(knowledge_base[i])):
+            match_number[i][index] = match_number[i][index] + does_match(word, knowledge_base[i][index])
+
+for i in selected_words:
+    for j in i:
+        match_horcrux(j)
+print(match_number)
