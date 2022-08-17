@@ -106,7 +106,6 @@ def does_match(word, given_string):
         return 0
     reg = r" ?" + word + r" ?";
     m = re.findall(reg, given_string, re.IGNORECASE)
-    print(m)
     return len(m)
 
 def init_match_number():
@@ -125,12 +124,12 @@ def match_horcrux(word):
         for index in range(0, len(knowledge_base[i])):
             match_number[i][index] += does_match(word, knowledge_base[i][index])
 
-def find_horcrux():
+def find_horcrux(number_of_common = 8):
     for i in selected_words:
-        print(Counter(i).most_common(8))
-        for j in Counter(i).most_common(8):
+        common_words = Counter(i).most_common(number_of_common)
+        for j in common_words:
             match_horcrux(j[0])
-    print(match_number)
+    write_log(match_number,this_file)
 
 
 
@@ -142,7 +141,7 @@ except:
     write_log("Error in fetching the base", this_file)
 
 try:
-    query = "Pareto's principle"
+    query = ""
     get_links(query)
 except:
     write_log(f"Error in getting links for {query}", this_file)
