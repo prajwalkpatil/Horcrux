@@ -17,6 +17,8 @@ selected_words = []
 knowledge_base = {}
 match_number = {}
 match_ratio = {}
+sorted_strings = []
+display_logs = False
 
 def is_ul(j):
     if re.match(r"\S*youtube.com\S*",j):
@@ -95,12 +97,14 @@ def fetch_base():
 
 
 def write_log(log_msg, from_file_name, log_file_name = "log"):
+    global display_logs
     now = datetime.now()
     date_time = now.strftime("%d %B %Y, %H:%M:%S")
     with open(f"logs/{log_file_name}.txt","a") as file_ptr:
         msg = f"{from_file_name} : {date_time} - {log_msg} \n";
         file_ptr.write(msg)
-    print(log_msg)
+    if display_logs:
+        print(log_msg)
 
 
 # ----------------------- Functions for matching Horcrux ---------------------- #
@@ -149,12 +153,12 @@ def calculate_horcrux():
         total_score += match_ratio[i]["score"]
     for i in match_ratio:
         match_ratio[i]["percentage"] = round(((match_ratio[i]["score"] / total_score) * 100), 2)
-    print(match_ratio)
+    # print(match_ratio)
 
 
 def sort_horcruxes():
     global match_ratio
-    sorted_strings = []
+    global sorted_strings
     temp_greater = 0
     temp_string = ""
     for j in match_ratio:
@@ -165,7 +169,23 @@ def sort_horcruxes():
         sorted_strings.append(temp_string)
         temp_greater = 0
         temp_string = ""
-    print(sorted_strings)
+    # print(sorted_strings)
+
+def print_results():
+    print("")
+    print("=========================== RESULTS ==========================")
+    global sorted_strings
+    global match_ratio
+    Horcrux_title = "Horcrux"
+    Score_title = "Score"
+    Percentage_title = "Percentage"
+    print(f"{Horcrux_title:{20}} {Score_title:>{20}} {Percentage_title:>{20}}")
+    print("")
+    for i in sorted_strings:
+        print(f"{i:{20}} {match_ratio[i]['score']:{20}} {match_ratio[i]['percentage']:{19}}%")
+
+
+
 
 def main():
     write_log("===================== START SESSION ======================", this_file)
@@ -195,7 +215,7 @@ def main():
     except:
         write_log("Error in processing the text content", this_file)
         exit()
-
+    print("Getting results. Please wait.")
     try:
         find_horcrux()
     except:
@@ -206,5 +226,5 @@ def main():
     sort_horcruxes()
 
     write_log("====================== END SESSION ======================\n\n\n", this_file)
-
+    print_results()
 main()
