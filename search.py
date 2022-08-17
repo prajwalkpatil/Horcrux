@@ -5,6 +5,7 @@ import string
 from datetime import datetime
 from googlesearch import search   
 from urllib.request import urlopen
+from collections import Counter
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
@@ -98,6 +99,40 @@ def write_log(log_msg, from_file_name, log_file_name = "log"):
     print(f"{log_msg} - logs/{log_file_name}.txt")
 
 
+# ----------------------- Functions for matching Horcrux ---------------------- #
+
+def does_match(word, given_string):
+    if len(word) <= 2:
+        return 0
+    reg = r" ?" + word + r" ?";
+    m = re.findall(reg, given_string, re.IGNORECASE)
+    print(m)
+    return len(m)
+
+def init_match_number():
+    global match_number
+    match_number = {}
+    for i in knowledge_base:
+        match_number[i] = []
+        for j in knowledge_base[i]:
+            match_number[i].append(0)
+
+def match_horcrux(word):
+    global match_number
+    if match_number == {}:
+        init_match_number()
+    for i in knowledge_base:
+        for index in range(0, len(knowledge_base[i])):
+            match_number[i][index] += does_match(word, knowledge_base[i][index])
+
+def find_horcrux():
+    for i in selected_words:
+        print(Counter(i).most_common(8))
+        for j in Counter(i).most_common(8):
+            match_horcrux(j[0])
+    print(match_number)
+
+
 
 write_log("===================== START SESSION ======================", this_file)
 
@@ -107,7 +142,7 @@ except:
     write_log("Error in fetching the base", this_file)
 
 try:
-    query = "Search Term"
+    query = "Pareto's principle"
     get_links(query)
 except:
     write_log(f"Error in getting links for {query}", this_file)
@@ -131,32 +166,12 @@ with open("selected.json", "w") as f:
     json.dump(selected_words, f)
 write_log(f"selected_words written to - \"selected.json\"", this_file)
 
+try:
+    find_horcrux()
+except:
+    write_log("Error in finding Horcrux", this_file)
+
+
 write_log("====================== END SESSION ======================\n\n\n", this_file)
 
 
-# ----------------------- Functions for matching Horcrux ---------------------- #
-
-def does_match(word, given_string):
-    reg = r".?" + word + r".?";
-    return len(re.findall(reg, given_string, re.IGNORECASE))
-
-def init_match_number():
-    global match_number
-    match_number = {}
-    for i in knowledge_base:
-        match_number[i] = []
-        for j in knowledge_base[i]:
-            match_number[i].append(0)
-
-def match_horcrux(word):
-    global match_number
-    if match_number == {}:
-        init_match_number()
-    for i in knowledge_base:
-        for index in range(0, len(knowledge_base[i])):
-            match_number[i][index] = match_number[i][index] + does_match(word, knowledge_base[i][index])
-
-for i in selected_words:
-    for j in i:
-        match_horcrux(j)
-print(match_number)
