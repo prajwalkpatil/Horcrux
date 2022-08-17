@@ -144,13 +144,28 @@ def calculate_horcrux():
         match_ratio[i]["score"] = 0;
         match_ratio[i]["percentage"] = 0;
         for j in range(0, len(match_number[i])):
-            match_ratio[i]["score"] += match_number[i][j] * (1 / pow(20,j))
+            match_ratio[i]["score"] += round(match_number[i][j] * (1 / pow(20, j)), 2)
     for i in match_ratio:
         total_score += match_ratio[i]["score"]
     for i in match_ratio:
-        match_ratio[i]["percentage"] = (match_ratio[i]["score"] / total_score) * 100;
+        match_ratio[i]["percentage"] = round(((match_ratio[i]["score"] / total_score) * 100), 2)
     print(match_ratio)
 
+
+def sort_horcruxes():
+    global match_ratio
+    sorted_strings = []
+    temp_greater = 0
+    temp_string = ""
+    for j in match_ratio:
+        for i in match_ratio:
+            if match_ratio[i]['percentage'] > temp_greater and i not in sorted_strings:
+                temp_greater = match_ratio[i]['percentage']
+                temp_string = i
+        sorted_strings.append(temp_string)
+        temp_greater = 0
+        temp_string = ""
+    print(sorted_strings)
 
 def main():
     write_log("===================== START SESSION ======================", this_file)
@@ -166,7 +181,7 @@ def main():
             get_links(query)
             break
         except:
-            write_log(f"Error in getting links for \'{query}\', Trying again.", this_file)
+            write_log(f"Unable to get search results for \'{query}\', Trying again.", this_file)
             continue
 
     try:
@@ -188,6 +203,7 @@ def main():
         exit()
 
     calculate_horcrux()
+    sort_horcruxes()
 
     write_log("====================== END SESSION ======================\n\n\n", this_file)
 
