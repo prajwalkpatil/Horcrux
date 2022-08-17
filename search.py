@@ -11,6 +11,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 link_results = []
 text_content = []
 selected_words = []
+knowledge_base = {}
 
 def is_ul(j):
     if re.match(r"\S*youtube.com\S*",j):
@@ -73,11 +74,16 @@ def process_text_content():
             if i[1]== 'NN' or i[1]== 'NNS' or i[1] == 'NNPS' or i[1] == 'NNP':
                 selected_words[-1].append(i[0])
 
+def fetch_base():
+    global knowledge_base
+    with open("base/json/base_joined.json","r") as json_file:
+        knowledge_base = json.load(json_file)
 
+fetch_base()
+print(knowledge_base)
 get_links("India")
 get_text_content()
 process_text_content()
-print(selected_words)
 
 with open("fetched.json", "w") as f:
     json.dump(text_content, f)
