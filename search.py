@@ -7,7 +7,6 @@ from googlesearch import search
 from urllib.request import urlopen
 from collections import Counter
 from bs4 import BeautifulSoup
-from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 
 this_file = "search.py"
