@@ -1,3 +1,7 @@
+#   Author: Prajwal K. Patil
+#   This program is used to clean the generated knowledge base.
+#       This program should be executed after executing base_generator.py
+
 import json
 
 copy_base = {}
@@ -16,6 +20,8 @@ for i in knowledge_base:
     for j in knowledge_base[i]:
         temp_set = set(j)
         copy_base[i].append(list(temp_set))
+
+#Joining seperate attributes to form a string seperated by spaces
 for h in knowledge_base:
     knowledge_base_string[h] = []
     for h_array in knowledge_base[h]:
@@ -26,6 +32,7 @@ for h in knowledge_base:
             base_string = base_string + ' ' + keys
         knowledge_base_string[h][-1] = base_string
         
+
 #Dumping the processed file
 try:
     with open("json/base_refined.json", "w") as write_file:
@@ -33,6 +40,7 @@ try:
 except:
     print("Error in dumping JSON!")
 
+#Dumping the joined file
 try:
     with open("./json/base_joined.json", "w") as write_file:
         json.dump(knowledge_base_string, write_file, indent=4)
