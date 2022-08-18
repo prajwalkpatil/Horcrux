@@ -64,16 +64,23 @@ def dump_base():
     global knowledge_base
     print(knowledge_base)
     try:
-        with open("json/base.json", "w") as write_file:
+        with open("./json/base.json", "w") as write_file:
             json.dump(knowledge_base, write_file, indent=4)
     except:
         print("Error in dumping JSON!")
 
-generate_secondary("Electronics", 500)
-generate_secondary("Computer science", 500)
-generate_secondary("Mathematics", 500)
-generate_secondary("Medicine", 500)
-generate_secondary("Country", 500)
-generate_secondary("Animal", 500)
+generate_secondary("Art", 500)
+generate_secondary("Biology", 500)
 generate_secondary("Business", 500)
+generate_secondary("Cinematography", 500)
+generate_secondary("Culture", 500) 
+generate_secondary("Geography", 500)
+generate_secondary("History", 500)
+generate_secondary("Mathematics", 500)
+generate_secondary("Music", 500)
+generate_secondary("Literature", 500)
+generate_secondary("Philosophy", 500)
+generate_secondary("Religion", 500)
+generate_secondary("Science", 500)
+generate_secondary("Technology", 500)
 dump_base()
