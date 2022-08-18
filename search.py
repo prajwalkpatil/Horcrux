@@ -18,7 +18,8 @@ knowledge_base = {}
 match_number = {}
 match_ratio = {}
 sorted_strings = []
-display_logs = False
+display_logs = True
+query = ""
 
 def is_ul(j):
     if re.match(r"\S*youtube.com\S*",j):
@@ -39,7 +40,7 @@ def is_ul(j):
 
 def get_links(keyword):
     global link_results
-    for j in search(keyword, tld="com", num = 25, stop = 25, pause=2): 
+    for j in search(keyword, tld="co.in", num = 25, stop = 25, pause=10): 
         if not is_ul(j):
             link_results.append(j)
     write_log(f"Links fetched for \"{keyword}\" successfully", this_file)
@@ -172,22 +173,27 @@ def sort_horcruxes():
     # print(sorted_strings)
 
 def print_results():
-    print("")
+    global display_logs
+    display_logs = False
+    write_log("======================== RESULTS - START =====================",this_file,"results")
     print("=========================== RESULTS ==========================")
     global sorted_strings
     global match_ratio
     Horcrux_title = "Horcrux"
     Score_title = "Score"
     Percentage_title = "Percentage"
+    write_log(f"Keyword: \'{query}\'",this_file,"results")
     print(f"{Horcrux_title:{20}} {Score_title:>{20}} {Percentage_title:>{20}}")
+    write_log(f"{Horcrux_title:{20}} {Score_title:>{20}} {Percentage_title:>{20}}",this_file,"results")
     print("")
     for i in sorted_strings:
         print(f"{i:{20}} {match_ratio[i]['score']:{20}} {match_ratio[i]['percentage']:{19}}%")
-
-
+        write_log(f"{i:{20}} {match_ratio[i]['score']:{20}} {match_ratio[i]['percentage']:{19}}%",this_file, "results")
+    write_log("======================== RESULTS - END  ======================\n\n\n",this_file,"results")
 
 
 def main():
+    global query
     write_log("===================== START SESSION ======================", this_file)
 
     try:
